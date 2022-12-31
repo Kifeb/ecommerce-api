@@ -2,3 +2,4 @@
 test.http
 Makefile
 go.sum
+.gitignore
