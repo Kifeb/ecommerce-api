@@ -1,0 +1,4 @@
+.env
+test.http
+Makefile
+go.sum
