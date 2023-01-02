@@ -30,12 +30,12 @@ func NewUserService(userRepository repository.UserRepository, DB *sql.DB, valida
 func (s *UserServiceImpl) Create(ctx context.Context, r web.UserCreateRequest) web.UserResponse {
 	err := s.Validate.Struct(r)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
@@ -55,7 +55,7 @@ func (s *UserServiceImpl) Create(ctx context.Context, r web.UserCreateRequest) w
 func (s *UserServiceImpl) FindAll(ctx context.Context) []web.UserResponse {
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
@@ -67,12 +67,12 @@ func (s *UserServiceImpl) FindAll(ctx context.Context) []web.UserResponse {
 func (s *UserServiceImpl) GetProductById(ctx context.Context, userId int, productId int) web.ProductResponse {
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 	product, err := s.UserRepository.GetProductById(ctx, tx, userId, productId)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	return helpers.ToProductResponse(product)
@@ -81,7 +81,7 @@ func (s *UserServiceImpl) GetProductById(ctx context.Context, userId int, produc
 func (s *UserServiceImpl) GetProductByUser(ctx context.Context, userId int) []web.ProductResponse {
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
@@ -92,34 +92,59 @@ func (s *UserServiceImpl) GetProductByUser(ctx context.Context, userId int) []we
 }
 
 func (s *UserServiceImpl) UpdateProductByUserSeller(ctx context.Context, request web.ProductUpdateRequest, userId int) web.ProductResponse {
+	err := s.Validate.Struct(request)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
+
 	product, err := s.UserRepository.GetProductById(ctx, tx, userId, request.Id)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	fmt.Println(product.Quantity)
+	// fmt.Println(product.Quantity)
 	product.Quantity = request.Quantity
 	product.Price = request.Price
 
-	product = s.UserRepository.UpdateProductByUserSeller(ctx, tx, product, userId)
-	fmt.Println(product)
+	product, err = s.UserRepository.UpdateProductByUserSeller(ctx, tx, product, userId)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return helpers.ToProductResponse(product)
 }
 
-func (s *UserServiceImpl) Purchase(ctx context.Context, userId int, productId int) web.ProductResponse {
+func (s *UserServiceImpl) Purchase(ctx context.Context, request web.ProductUpdateRequest, userId int) web.ProductResponse {
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
-	products, err := s.UserRepository.Purchase(ctx, tx, userId, productId)
+	product, err := s.UserRepository.GetProductById(ctx, tx, userId, request.Id)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
 
-	return helpers.ToProductResponse(products)
+	q := request.Quantity
+	if q >= product.Quantity {
+		fmt.Println("jumlah pesana tidak boleh lebih dari stok")
+	} else {
+		product.Quantity -= request.Quantity
+	}
+
+	product.Price = request.Price
+
+	product, err = s.UserRepository.UpdateProductByUserSeller(ctx, tx, product, userId)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return helpers.ToProductResponse(product)
 }

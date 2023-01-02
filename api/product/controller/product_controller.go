@@ -5,6 +5,6 @@ import (
 )
 
 type ProductController interface {
-	Create(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request, userId int)
 	FindAll(w http.ResponseWriter, r *http.Request)
 }

@@ -11,5 +11,5 @@ type UserService interface {
 	GetProductById(ctx context.Context, userId int, productId int) web.ProductResponse
 	GetProductByUser(ctx context.Context, userId int) []web.ProductResponse
 	UpdateProductByUserSeller(ctx context.Context, request web.ProductUpdateRequest, userId int) web.ProductResponse
-	Purchase(ctx context.Context, userId int, productId int) web.ProductResponse
+	Purchase(ctx context.Context, request web.ProductUpdateRequest, userId int) web.ProductResponse
 }

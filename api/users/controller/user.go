@@ -4,7 +4,6 @@ import (
 	"ecommerce_api/api/users/service"
 	"ecommerce_api/helpers"
 	web "ecommerce_api/model/web"
-	"fmt"
 	"net/http"
 )
 
@@ -44,8 +43,7 @@ func (c *UserControllerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserControllerImpl) GetProductByUser(w http.ResponseWriter, r *http.Request, id int) {
-	// userId := mux.Vars(r)["userId"]
-	// id, _ := strconv.Atoi(userId)
+
 	productResponse := c.UserService.GetProductByUser(r.Context(), id)
 	webResponse := web.WebResponse{
 		Code:   200,
@@ -74,7 +72,7 @@ func (c *UserControllerImpl) UpdateProductBySeller(w http.ResponseWriter, r *htt
 	productUpdateRequest.Id = productId
 
 	productResponse := c.UserService.UpdateProductByUserSeller(r.Context(), productUpdateRequest, userId)
-	fmt.Println(productResponse)
+
 	webResponse := web.WebResponse{
 		Code:   200,
 		Status: "success",
@@ -85,7 +83,13 @@ func (c *UserControllerImpl) UpdateProductBySeller(w http.ResponseWriter, r *htt
 }
 
 func (c *UserControllerImpl) Purchase(w http.ResponseWriter, r *http.Request, userId int, productId int) {
-	productResponse := c.UserService.Purchase(r.Context(), userId, productId)
+
+	purchase := web.ProductUpdateRequest{}
+	helpers.ReadFromReqBody(r, &purchase)
+
+	purchase.Id = productId
+
+	productResponse := c.UserService.Purchase(r.Context(), purchase, userId)
 	webResponse := web.WebResponse{
 		Code:   200,
 		Status: "success",

@@ -6,6 +6,6 @@ import (
 )
 
 type ProductService interface {
-	Create(ctx context.Context, r web.ProductCreateRequest) web.ProductResponse
+	Create(ctx context.Context, r web.ProductCreateRequest, userId int) web.ProductResponse
 	FindAll(ctx context.Context) []web.ProductResponse
 }

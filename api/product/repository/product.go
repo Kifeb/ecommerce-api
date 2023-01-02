@@ -14,8 +14,8 @@ func NewProductRepository() ProductRepository {
 	return &ProductRepositoryImpl{}
 }
 
-func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
-	query := "INSERT INTO product(name, price, picture, category, quantity, user_id) VALUES (?, ?, ?, ?, ?, ?)"
+func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product domain.Product, userId int) domain.Product {
+	query := "INSERT INTO product(name, price, picture, category, quantity, user_id) VALUES (?, ?, ?, ?, ?, ?) JOIN "
 
 	result, err := tx.ExecContext(ctx, query, product.Name, product.Price, product.Picture, product.Category, product.Quantity, product.User_Id)
 	if err != nil {
@@ -34,7 +34,7 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domai
 	query := "SELECT id, name, picture, category, quantity FROM product"
 	result, err := tx.QueryContext(ctx, query)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer result.Close()
 
@@ -43,7 +43,7 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domai
 		product := domain.Product{}
 		err := result.Scan(&product.Id, &product.Name, &product.Picture, &product.Category, &product.Quantity)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		products = append(products, product)
 	}

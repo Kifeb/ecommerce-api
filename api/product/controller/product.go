@@ -17,11 +17,11 @@ func NewProductController(productService productService.ProductService) ProductC
 	}
 }
 
-func (c *ProductControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
+func (c *ProductControllerImpl) Create(w http.ResponseWriter, r *http.Request, userId int) {
 	userCreateReq := web.ProductCreateRequest{}
 	helpers.ReadFromReqBody(r, &userCreateReq)
 
-	productResponse := c.ProductService.Create(r.Context(), userCreateReq)
+	productResponse := c.ProductService.Create(r.Context(), userCreateReq, userId)
 	webResponse := web.WebResponse{
 		Code:   200,
 		Status: "success",

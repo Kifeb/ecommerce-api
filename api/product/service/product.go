@@ -7,6 +7,7 @@ import (
 	"ecommerce_api/helpers"
 	"ecommerce_api/model/domain"
 	web "ecommerce_api/model/web"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -25,15 +26,15 @@ func NewProductService(productRepository productRepository.ProductRepository, DB
 	}
 }
 
-func (s *ProductServiceImpl) Create(ctx context.Context, r web.ProductCreateRequest) web.ProductResponse {
+func (s *ProductServiceImpl) Create(ctx context.Context, r web.ProductCreateRequest, userId int) web.ProductResponse {
 	err := s.Validate.Struct(r)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
@@ -46,7 +47,7 @@ func (s *ProductServiceImpl) Create(ctx context.Context, r web.ProductCreateRequ
 		User_Id:  r.User_Id,
 	}
 
-	product = s.ProductRepository.Save(ctx, tx, product)
+	product = s.ProductRepository.Save(ctx, tx, product, userId)
 
 	return helpers.ToProductResponse(product)
 }
@@ -54,7 +55,7 @@ func (s *ProductServiceImpl) Create(ctx context.Context, r web.ProductCreateRequ
 func (s *ProductServiceImpl) FindAll(ctx context.Context) []web.ProductResponse {
 	tx, err := s.DB.Begin()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer helpers.CommitOrRollback(tx)
 
