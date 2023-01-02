@@ -12,7 +12,7 @@ This apps is API for resolve test case fullstack from universa. I make this API 
 ```bash 
     https://github.com/Kifeb/ecommerce-api.git
     create .env file
-    go run main.ho
+    go run main.go
 ```
 
 ### Database
