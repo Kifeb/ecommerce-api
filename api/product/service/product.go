@@ -35,13 +35,15 @@ func (s *ProductServiceImpl) Create(ctx context.Context, r web.ProductCreateRequ
 	if err != nil {
 		panic(err)
 	}
-	defer helpers.CommirOrRollback(tx)
+	defer helpers.CommitOrRollback(tx)
 
 	product := domain.Product{
 		Name:     r.Name,
+		Price:    r.Price,
 		Picture:  r.Picture,
 		Category: r.Category,
 		Quantity: r.Quantity,
+		User_Id:  r.User_Id,
 	}
 
 	product = s.ProductRepository.Save(ctx, tx, product)
@@ -54,7 +56,7 @@ func (s *ProductServiceImpl) FindAll(ctx context.Context) []web.ProductResponse 
 	if err != nil {
 		panic(err)
 	}
-	defer helpers.CommirOrRollback(tx)
+	defer helpers.CommitOrRollback(tx)
 
 	products := s.ProductRepository.FindAll(ctx, tx)
 

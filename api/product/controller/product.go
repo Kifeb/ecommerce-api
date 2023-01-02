@@ -5,8 +5,6 @@ import (
 	"ecommerce_api/helpers"
 	web "ecommerce_api/model/web"
 	"net/http"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 type ProductControllerImpl struct {
@@ -19,7 +17,7 @@ func NewProductController(productService productService.ProductService) ProductC
 	}
 }
 
-func (c *ProductControllerImpl) Create(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func (c *ProductControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
 	userCreateReq := web.ProductCreateRequest{}
 	helpers.ReadFromReqBody(r, &userCreateReq)
 
@@ -33,7 +31,7 @@ func (c *ProductControllerImpl) Create(w http.ResponseWriter, r *http.Request, p
 	helpers.WriteToReqBody(w, webResponse)
 }
 
-func (c *ProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c *ProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
 	productResponses := c.ProductService.FindAll(r.Context())
 	webResponse := web.WebResponse{
 		Code:   200,

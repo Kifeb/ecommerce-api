@@ -3,8 +3,10 @@ package web
 type ProductCreateRequest struct {
 	Name     string `json:"name"`
 	Picture  string `json:"picture"`
+	Price    int    `json:"price"`
 	Category string `json:"category"`
 	Quantity int    `json:"quantity"`
+	User_Id  int    `json:"user_id"`
 }
 
 type UserCreateRequest struct {
@@ -12,5 +14,5 @@ type UserCreateRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Role     string `json:"role"`
-	Phone    int    `json:"phone"`
+	Phone    string `json:"phone"`
 }

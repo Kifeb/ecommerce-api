@@ -1,15 +1,19 @@
 package helpers
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
-func CommirOrRollback(tx *sql.Tx) {
+func CommitOrRollback(tx *sql.Tx) {
 	err := recover()
 	if err != nil {
 		errRollback := tx.Rollback()
 		if errRollback != nil {
 			panic(errRollback)
 		}
-		panic(err)
+		// panic(err)
+		fmt.Println(err)
 	} else {
 		tx.Commit()
 	}

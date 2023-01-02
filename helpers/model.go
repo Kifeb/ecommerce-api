@@ -29,9 +29,11 @@ func ToProductResponse(product domain.Product) web.ProductResponse {
 	return web.ProductResponse{
 		Id:       product.Id,
 		Name:     product.Name,
+		Price:    product.Price,
 		Picture:  product.Picture,
 		Category: product.Category,
 		Quantity: product.Quantity,
+		// User_Id:  product.User_Id,
 	}
 }
 

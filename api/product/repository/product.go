@@ -15,9 +15,9 @@ func NewProductRepository() ProductRepository {
 }
 
 func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
-	query := "INSERT INTO product(name, picture, category, quantity) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO product(name, price, picture, category, quantity, user_id) VALUES (?, ?, ?, ?, ?, ?)"
 
-	result, err := tx.ExecContext(ctx, query, product.Name, product.Picture, product.Category, product.Quantity)
+	result, err := tx.ExecContext(ctx, query, product.Name, product.Price, product.Picture, product.Category, product.Quantity, product.User_Id)
 	if err != nil {
 		log.Fatal(err)
 	}
